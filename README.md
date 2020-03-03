@@ -1,2 +1,2 @@
-# nodejs-taskmanager
+# NodeJS Study project
 NodeJS Study project
