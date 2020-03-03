@@ -1,0 +1,56 @@
+version: '2.2'
+services:
+  app:
+    build: strapi
+    environment:
+      - NODE_ENV=production
+    volumes_from:
+      - app-data
+    expose:
+      - "80"
+      - "8080"
+    depends_on: 
+      - database
+    networks:
+      - taskmanager
+
+  # strapi:
+  #   build: strapi
+  #   ports:
+  #     - "80:80"
+  #     - "3000:3000"
+  #   volumes:
+  #     - ~/.ssh:/root/.ssh
+  #     - ~/.composer/auth.json:/root/.composer/auth.json
+  #     - ~/.composer/cache:/root/.composer/cache:cached
+  #   volumes_from:
+  #     - dashboard-data
+  #   networks:
+  #     - taskmanager
+
+  database:
+    image: mongo
+    volumes_from:
+      - db-data
+    ports:
+      - "27017-27019:27017-27019"
+    environment:
+      - MONGO_INITDB_DATABASE=taskmanager
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+    networks:
+      - taskmanager
+
+  app-data:
+    image: tianon/true
+    volumes:
+      - ../app:/var/www/html
+
+  db-data:
+    image: tianon/true
+    volumes:
+      - ./.db-volume:/data/db
+
+networks:
+  taskmanager:
+    driver: bridge
